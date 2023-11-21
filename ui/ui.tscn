@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://ui/ui.gd" type="Script" id=1]
+
+[node name="UI" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Score" type="Label" parent="."]
+margin_left = 372.043
+margin_top = 33.2722
+margin_right = 436.043
+margin_bottom = 48.2722
+rect_scale = Vector2( 4.4, 4.4 )
+text = "0s"
+align = 1
+
+[node name="GameOverMessage" type="Label" parent="."]
+visible = false
+margin_left = 282.813
+margin_top = 253.322
+margin_right = 358.813
+margin_bottom = 267.322
+rect_scale = Vector2( 6, 6 )
+text = "GAME OVER"
+align = 1
+valign = 1
+
+[node name="NewGameButton" type="Button" parent="."]
+visible = false
+margin_left = 440.0
+margin_top = 392.0
+margin_right = 582.0
+margin_bottom = 444.0
+text = "Play Again?"
+__meta__ = {
+"_edit_use_anchors_": false
+}

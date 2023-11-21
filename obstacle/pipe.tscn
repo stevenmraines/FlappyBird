@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://obstacle/pipe.png" type="Texture" id=1]
+[ext_resource path="res://obstacle/pipe.gd" type="Script" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 52.4395, 257.344 )
+
+[node name="Pipe" type="RigidBody2D"]
+mode = 1
+gravity_scale = 0.0
+script = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 52.4894, 257.375 )
+shape = SubResource( 1 )
+
+[node name="TextureRect" type="TextureRect" parent="."]
+margin_right = 79.0
+margin_bottom = 564.0
+rect_scale = Vector2( 1.36, 0.919999 )
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

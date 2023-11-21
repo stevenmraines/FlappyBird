@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://obstacle/white_double_arrow.png" type="Texture" id=1]
+[ext_resource path="res://obstacle/smash_gate.gd" type="Script" id=2]
+[ext_resource path="res://obstacle/smash_icon.tres" type="Animation" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 257.287, 568.193 )
+
+[node name="SmashGate" type="Node2D"]
+script = ExtResource( 2 )
+smash_icon_animation = ExtResource( 3 )
+
+[node name="TopArrow" type="TextureRect" parent="."]
+margin_right = 512.0
+margin_bottom = 512.0
+rect_rotation = 90.0
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BottomArrow" type="TextureRect" parent="."]
+margin_top = 625.0
+margin_right = 512.0
+margin_bottom = 1137.08
+rect_rotation = 90.0
+texture = ExtResource( 1 )
+flip_h = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( -256.896, 566.423 )
+shape = SubResource( 1 )
+
+[node name="SmashIconAnimator" type="AnimationPlayer" parent="."]
+anims/smash_icon = ExtResource( 3 )

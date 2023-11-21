@@ -1,0 +1,43 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://background/background.tscn" type="PackedScene" id=1]
+[ext_resource path="res://bird/bird.tscn" type="PackedScene" id=2]
+[ext_resource path="res://ui/ui.tscn" type="PackedScene" id=3]
+[ext_resource path="res://level/controller.gd" type="Script" id=4]
+[ext_resource path="res://obstacle/spawner.tscn" type="PackedScene" id=6]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 768, 50 )
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 4 )
+bird_scene = ExtResource( 2 )
+
+[node name="Background" parent="." instance=ExtResource( 1 )]
+scroll_speed = 100
+
+[node name="CanvasLayer1" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="Bird" parent="CanvasLayer1" instance=ExtResource( 2 )]
+position = Vector2( 211.394, 268.206 )
+vertical_movement_speed = 225
+
+[node name="ObstacleSpawner" parent="." instance=ExtResource( 6 )]
+position = Vector2( 1050, 0 )
+max_y = 175
+
+[node name="DeathTrigger" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeathTrigger"]
+position = Vector2( 512, 650 )
+shape = SubResource( 1 )
+
+[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="UI" parent="CanvasLayer2" instance=ExtResource( 3 )]
+
+[node name="SpeedBoostTimer" type="Timer" parent="."]
+wait_time = 10.5
+one_shot = true
