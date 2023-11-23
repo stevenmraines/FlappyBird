@@ -5,14 +5,18 @@ signal obstacle_spawned(obstacle)
 onready var _spawn_timer := $SpawnTimer
 
 export var obstacle_scene : PackedScene
-export var speed_boost_spawn_index := 10
-export var smash_spawn_index := 3
+export var speed_boost_spawn_index := 12
+export var smash_spawn_index := 7
+export var slide_spawn_index := 2
 export var max_smashers := 3
+export var max_sliders := 3
 export var min_y := -200
 export var max_y := 400
 
 var _spawn_counter := 0
 var _smashers_remaining := 0
+var _sliders_remaining := 0
+var _last_slide_position : String
 var _spawned_obstacles : Dictionary
 
 
@@ -30,19 +34,23 @@ func _spawn_obstacle():
 	new_obstacle.position.y = rand_range(min_y, max_y)
 	new_obstacle.connect("moved_past_screen_edge", self, "_on_obstacle_moved_past_screen_edge")
 	new_obstacle.connect("smash_gate_entered", self, "_on_smash_gate_entered")
+	new_obstacle.connect("slide_gate_entered", self, "_on_slide_gate_entered")
 	emit_signal("obstacle_spawned", new_obstacle)
 	
 	if _spawn_counter == speed_boost_spawn_index:
 		new_obstacle.make_boost_type()
 	elif _spawn_counter == smash_spawn_index:
 		new_obstacle.make_smash_type()
+	elif _spawn_counter == slide_spawn_index:
+		new_obstacle.make_slide_type()
 	elif _smashers_remaining > 0:
-		# TODO How to get a reference to the obstacle immediately behind the smash gate?
 		new_obstacle.play_smash_animation()
 		_smashers_remaining -= 1
+	elif _sliders_remaining > 0:
+		new_obstacle.play_slide_animation(_get_next_slide_position())
+		_sliders_remaining -= 1
 	
-	# Reset this once it gets high enough, just in case we end up exceeding the max int size
-	if _spawn_counter == 100:
+	if _spawn_counter == 20:
 		_spawn_counter = 0
 
 
@@ -61,6 +69,24 @@ func _on_smash_gate_entered():
 			_smashers_remaining -= 1
 
 
+func _on_slide_gate_entered():
+	_sliders_remaining = max_sliders
+	
+	for instance_id in _spawned_obstacles:
+		var obstacle = _spawned_obstacles[instance_id]
+		if obstacle.play_slide_animation(_get_next_slide_position()):
+			_sliders_remaining -= 1
+
+
+func _get_next_slide_position():
+	if _last_slide_position == null or _last_slide_position == "bottom":
+		_last_slide_position = "top"
+		return "top"
+	else:
+		_last_slide_position = "bottom"
+		return "bottom"
+
+
 func start_timer():
 	_spawn_timer.start()
 
@@ -69,3 +95,5 @@ func stop_timer():
 	_spawn_timer.stop()
 	_spawn_counter = 0
 	_smashers_remaining = 0
+	_sliders_remaining = 0
+	_spawned_obstacles = {}

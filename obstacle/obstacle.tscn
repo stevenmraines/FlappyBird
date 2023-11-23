@@ -1,29 +1,42 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://obstacle/pipe.tscn" type="PackedScene" id=1]
 [ext_resource path="res://obstacle/obstacle.gd" type="Script" id=2]
 [ext_resource path="res://obstacle/smash.tres" type="Animation" id=3]
 [ext_resource path="res://obstacle/smash_gate.tscn" type="PackedScene" id=4]
 [ext_resource path="res://obstacle/speed_boost_gate.tscn" type="PackedScene" id=5]
+[ext_resource path="res://obstacle/slide_gate.tscn" type="PackedScene" id=6]
+[ext_resource path="res://obstacle/slide.tres" type="Animation" id=7]
 
 [node name="Obstacle" type="Node2D"]
 script = ExtResource( 2 )
 smash_animation = ExtResource( 3 )
+slide_duration = 4
 
 [node name="TopPipe" parent="." instance=ExtResource( 1 )]
-position = Vector2( 0, -280 )
+position = Vector2( 0, -300 )
 flipped = true
 
 [node name="BottomPipe" parent="." instance=ExtResource( 1 )]
-position = Vector2( 0, 380 )
+position = Vector2( 0, 400 )
 
 [node name="PipeAnimator" type="AnimationPlayer" parent="."]
+anims/slide = ExtResource( 7 )
 anims/smash = ExtResource( 3 )
 
 [node name="SmashGate" parent="." instance=ExtResource( 4 )]
-position = Vector2( 104.332, 237.806 )
-scale = Vector2( 0.2, 0.122 )
+visible = false
+position = Vector2( 104.332, 217.455 )
+scale = Vector2( 0.2, 0.159 )
 
 [node name="SpeedBoostGate" parent="." instance=ExtResource( 5 )]
-position = Vector2( -0.32576, 237.333 )
-scale = Vector2( 0.32, 0.25 )
+visible = false
+position = Vector2( -0.32576, 218.026 )
+scale = Vector2( 0.32, 0.32 )
+
+[node name="SlideGate" parent="." instance=ExtResource( 6 )]
+visible = false
+position = Vector2( 0.694243, 217.307 )
+scale = Vector2( 0.09, 0.1 )
+
+[node name="SlideTweener" type="Tween" parent="."]
