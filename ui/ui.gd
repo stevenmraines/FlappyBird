@@ -5,6 +5,8 @@ signal new_game_pressed
 onready var _score := $Score
 onready var _game_over_message := $GameOverMessage
 onready var _new_game_button := $NewGameButton
+onready var _speed_boost_remaining := $SpeedBoostRemaining
+onready var _speed_boost_remaining_tweener := $SpeedBoostRemaining/SpeedBoostRemainingTweener
 
 var _time_start := 0
 var _time_now := 0
@@ -38,11 +40,44 @@ func _reset_timer():
 func _show_game_over():
 	_game_over_message.visible = true
 	_new_game_button.visible = true
+	_speed_boost_remaining.visible = false
 
 
 func _hide_game_over():
 	_game_over_message.visible = false
 	_new_game_button.visible = false
+	_speed_boost_remaining.visible = false
+
+
+func show_speed_boost_remaining():
+	_speed_boost_remaining.visible = true
+
+
+func set_speed_boost_remaining(remaining):
+	_speed_boost_remaining.text = str(
+		"Boost Remaining: " if remaining < 10 else "Boost Remaining:  ",
+		remaining,
+		"s"
+	)
+	
+	if remaining > 3 or _speed_boost_remaining_tweener.is_active():
+		return
+	
+	_speed_boost_remaining_tweener.interpolate_property(
+		_speed_boost_remaining,
+		"modulate",
+		Color.white,
+		Color.red,
+		0.5,
+		Tween.TRANS_LINEAR
+	)
+	
+	_speed_boost_remaining_tweener.start()
+
+
+func hide_speed_boost_remaining():
+	_speed_boost_remaining_tweener.stop_all()
+	_speed_boost_remaining.visible = false
 
 
 func _emit_new_game_signal():

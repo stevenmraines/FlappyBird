@@ -40,6 +40,8 @@ func _ready():
 	connect("speed_boost_expired", _background, "deboost_speed")
 # warning-ignore:return_value_discarded
 	connect("speed_boost_expired", _bird, "deboost_speed")
+# warning-ignore:return_value_discarded
+	connect("speed_boost_expired", _ui, "hide_speed_boost_remaining")
 	
 # warning-ignore:return_value_discarded
 	connect("new_game", _background, "start_scroll")
@@ -62,6 +64,11 @@ func _ready():
 	randomize()
 
 
+func _process(_delta):
+	if _speed_boost_timer.time_left > 0:
+		_ui.set_speed_boost_remaining(round(_speed_boost_timer.time_left))
+
+
 func _on_obstacle_spawned(obstacle):
 # warning-ignore:return_value_discarded
 	connect("game_over", obstacle, "stop_movement")
@@ -80,6 +87,7 @@ func _on_obstacle_spawned(obstacle):
 func _on_speed_boost_gate_entered():
 	emit_signal("speed_boosted")
 	_speed_boost_timer.start()
+	_ui.show_speed_boost_remaining()
 
 
 func _on_speed_boost_timer_timeout():
@@ -109,6 +117,7 @@ func _reset_bird():
 	_bird = new_bird
 	_canvas_layer_1.add_child(new_bird)
 	_bird.position = _bird_start_position
+	
 # warning-ignore:return_value_discarded
 	_bird.connect("body_entered", self, "_on_body_entered")
 # warning-ignore:return_value_discarded

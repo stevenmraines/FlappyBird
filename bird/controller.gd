@@ -14,7 +14,9 @@ export var speed_ghost_delay_modifier := 6.0
 
 onready var _animated_sprite := $AnimatedSprite
 onready var _dash_tweener := $DashTweener
+onready var _speed_boost_reset_tweener := $SpeedBoostResetTweener
 
+var _initial_position : Vector2
 var _up_arrow_key_pressed := false
 var _allow_input := true
 var _needs_reset := false
@@ -26,6 +28,8 @@ var _can_dash := true
 
 
 func _ready():
+	_initial_position = position
+	
 # warning-ignore:return_value_discarded
 	_dash_tweener.connect("tween_completed", self, "_on_dash_tweener_tween_completed")
 	
@@ -119,6 +123,17 @@ func boost_speed():
 	_is_speed_boosted = true
 	_play_speed_boost_animation()
 	_can_dash = false
+	
+	_speed_boost_reset_tweener.interpolate_property(
+		self,
+		"position:x",
+		position.x,
+		_initial_position.x,
+		1.0,
+		Tween.TRANS_LINEAR
+	)
+	
+	_speed_boost_reset_tweener.start()
 
 
 func deboost_speed():

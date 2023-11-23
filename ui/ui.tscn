@@ -18,6 +18,9 @@ margin_bottom = 48.2722
 rect_scale = Vector2( 4.4, 4.4 )
 text = "0s"
 align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="GameOverMessage" type="Label" parent="."]
 visible = false
@@ -40,3 +43,16 @@ text = "Play Again?"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="SpeedBoostRemaining" type="Label" parent="."]
+visible = false
+margin_top = 524.492
+margin_right = 342.0
+margin_bottom = 538.492
+rect_scale = Vector2( 3, 3 )
+text = "Boost Remaining: 0s"
+align = 1
+
+[node name="SpeedBoostRemainingTweener" type="Tween" parent="SpeedBoostRemaining"]
+repeat = true
+playback/repeat = true
