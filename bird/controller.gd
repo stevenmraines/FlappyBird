@@ -6,7 +6,8 @@ export var hang_time := 100.0
 # TODO Exporting this var breaks it for some reason, value can't be changed in inspector
 var vertical_movement_speed := 400
 export var dash_distance := 100
-export var dash_duration := 0.5
+export var stall_duration := 0.4
+export var dash_duration := 0.3
 export var _speed_boost_ghost_scene : PackedScene
 export var number_of_speed_ghosts := 4
 export var speed_ghost_delay_modifier := 6.0
@@ -27,6 +28,8 @@ var _can_dash := true
 func _ready():
 # warning-ignore:return_value_discarded
 	_dash_tweener.connect("tween_completed", self, "_on_dash_tweener_tween_completed")
+	
+	_play_flying_animation()
 	
 	for i in range(1, number_of_speed_ghosts + 1):
 		var ghost = _speed_boost_ghost_scene.instance()
@@ -59,44 +62,13 @@ func _physics_process(delta):
 		_time_hung += delta
 	
 	if _can_dash and Input.is_key_pressed(KEY_LEFT):
+		_play_stall_animation()
 		_do_dash(position.x - dash_distance)
 	elif _can_dash and Input.is_key_pressed(KEY_RIGHT):
+		_play_dash_animation()
 		_do_dash(position.x + dash_distance)
 		
 	position.y = new_y
-
-
-#func _integrate_forces(state):
-#	if _needs_reset:
-#		_allow_input = true
-#		state.set_angular_velocity(0)
-#		state.set_linear_velocity(Vector2.ZERO)
-#		state.transform.origin = Vector2(256, 300)  # Reset position
-#		state.transform = state.transform.rotated(-state.transform.get_rotation())
-#		_needs_reset = false
-#
-#	if not _allow_input:
-#		return
-#
-#	var velocity = Vector2.ZERO
-#	var _key_pressed := false
-#
-#	if Input.is_key_pressed(KEY_UP):
-#		velocity.y = -vertical_movement_speed
-#		_up_arrow_key_pressed = true
-#		_key_pressed = true
-#	elif _up_arrow_key_pressed:
-#		_up_arrow_key_pressed = false
-#		_key_pressed = true
-#
-#	if Input.is_key_pressed(KEY_RIGHT):
-#		velocity.x = horizontal_movement_speed
-#		_key_pressed = true
-#	elif Input.is_key_pressed(KEY_LEFT):
-#		velocity.x = -horizontal_movement_speed
-#		_key_pressed = true
-#
-#	set_axis_velocity(velocity)
 
 
 func _do_dash(new_x):
@@ -107,8 +79,8 @@ func _do_dash(new_x):
 		"position",
 		position,
 		Vector2(new_x, position.y),
-		dash_duration,
-		Tween.TRANS_EXPO
+		dash_duration if new_x > position.x else stall_duration,
+		Tween.TRANS_QUAD if new_x > position.x else Tween.TRANS_LINEAR
 	)
 	
 	_dash_tweener.start()
@@ -116,6 +88,7 @@ func _do_dash(new_x):
 
 func _on_dash_tweener_tween_completed(_object, _key):
 	_can_dash = true
+	_play_flying_animation()
 
 
 func _set_speed_ghost_position(ghost):
@@ -137,24 +110,44 @@ func stop_input():
 
 func reset():
 	_needs_reset = true
-	_animated_sprite.play()
+	_play_flying_animation()
 	_time_hung = 0.0
 	_can_dash = true
 
 
 func boost_speed():
 	_is_speed_boosted = true
-	_animated_sprite.stop()
-	_animated_sprite.frame = 1
-	_set_speed_ghosts_visibility(true)
+	_play_speed_boost_animation()
+	_can_dash = false
 
 
 func deboost_speed():
 	_is_speed_boosted = false
-	_animated_sprite.play()
-	_set_speed_ghosts_visibility(false)
+	_play_flying_animation()
+	_can_dash = true
 
 
 func _set_speed_ghosts_visibility(visible):
 	for ghost in _speed_ghosts:
 		ghost.set_is_visible(visible)
+
+
+func _play_flying_animation():
+	_animated_sprite.play("flying")
+	_set_speed_ghosts_visibility(false)
+
+
+func _play_stall_animation():
+	_animated_sprite.play("stall")
+	_set_speed_ghosts_visibility(false)
+
+
+func _play_speed_boost_animation():
+	_animated_sprite.stop()
+	_animated_sprite.frame = 1
+	_set_speed_ghosts_visibility(true)
+
+
+func _play_dash_animation():
+	_animated_sprite.play("dash")
+	_set_speed_ghosts_visibility(false)
