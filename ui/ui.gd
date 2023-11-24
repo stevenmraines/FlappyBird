@@ -51,6 +51,7 @@ func _hide_game_over():
 
 func show_speed_boost_remaining():
 	_speed_boost_remaining.visible = true
+	_speed_boost_remaining.modulate = Color.white
 
 
 func set_speed_boost_remaining(remaining):

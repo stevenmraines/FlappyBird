@@ -24,7 +24,6 @@ position = Vector2( 200, 275 )
 
 [node name="ObstacleSpawner" parent="." instance=ExtResource( 6 )]
 position = Vector2( 1050, 0 )
-speed_boost_spawn_index = 2
 max_y = 175
 
 [node name="DeathTrigger" type="Area2D" parent="."]

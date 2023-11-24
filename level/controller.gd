@@ -22,9 +22,9 @@ func _ready():
 	_bird_start_position = _bird.position
 	
 # warning-ignore:return_value_discarded
-	_bird.connect("body_entered", self, "_on_body_entered")
+	_bird.connect("collided_with_obstacle", self, "_on_bird_collided_with_obstacle")
 # warning-ignore:return_value_discarded
-	_death_trigger.connect("body_entered", self, "_on_body_entered")
+	_death_trigger.connect("body_entered", self, "_on_death_trigger_body_entered")
 # warning-ignore:return_value_discarded
 	_obstacle_spawner.connect("obstacle_spawned", self, "_on_obstacle_spawned")
 # warning-ignore:return_value_discarded
@@ -55,7 +55,7 @@ func _ready():
 # warning-ignore:return_value_discarded
 	connect("game_over", _background, "stop_scroll")
 # warning-ignore:return_value_discarded
-	connect("game_over", _bird, "stop_input")
+	connect("game_over", _bird, "die")
 # warning-ignore:return_value_discarded
 	connect("game_over", _obstacle_spawner, "stop_timer")
 # warning-ignore:return_value_discarded
@@ -94,7 +94,11 @@ func _on_speed_boost_timer_timeout():
 	emit_signal("speed_boost_expired")
 
 
-func _on_body_entered(_body):
+func _on_bird_collided_with_obstacle(_collision):
+	_game_over()
+
+
+func _on_death_trigger_body_entered(_body):
 	_game_over()
 
 
@@ -119,8 +123,8 @@ func _reset_bird():
 	_bird.position = _bird_start_position
 	
 # warning-ignore:return_value_discarded
-	_bird.connect("body_entered", self, "_on_body_entered")
+	_bird.connect("collided_with_obstacle", self, "_on_bird_collided_with_obstacle")
 # warning-ignore:return_value_discarded
 	connect("speed_boosted", _bird, "boost_speed")
 # warning-ignore:return_value_discarded
-	connect("game_over", _bird, "stop_input")
+	connect("game_over", _bird, "die")

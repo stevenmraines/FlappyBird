@@ -1,8 +1,11 @@
-extends RigidBody2D
+extends KinematicBody2D
 
+signal collided_with_obstacle(collision)
+
+export var gravity := 1000
 export var max_velocity := 600
-export var gravity := 100
-export var hang_time := 100.0
+export var flap_speed := -500
+
 # TODO Exporting this var breaks it for some reason, value can't be changed in inspector
 var vertical_movement_speed := 400
 export var dash_distance := 100
@@ -22,9 +25,12 @@ var _allow_input := true
 var _needs_reset := false
 var _is_speed_boosted := false
 var _speed_ghosts : Array
-var _downward_velocity := 0
-var _time_hung := 0.0
 var _can_dash := true
+var _velocity := Vector2.ZERO
+var _is_flying := false
+var _is_dead := false
+var _is_landed_on_pipe := false
+var _touched_bottom_of_top_pipe := false
 
 
 func _ready():
@@ -32,8 +38,6 @@ func _ready():
 	
 # warning-ignore:return_value_discarded
 	_dash_tweener.connect("tween_completed", self, "_on_dash_tweener_tween_completed")
-	
-	_play_flying_animation()
 	
 	for i in range(1, number_of_speed_ghosts + 1):
 		var ghost = _speed_boost_ghost_scene.instance()
@@ -48,31 +52,63 @@ func _ready():
 		ghost.start_position_timer()
 
 
+# TODO Clean up all this mess later, try to separate movement, animation, rotation, and state as much as possible
 func _physics_process(delta):
-	var new_y = position.y + _downward_velocity
+	if _is_dead and not _is_landed_on_pipe and not _touched_bottom_of_top_pipe:
+		_velocity.y += gravity * delta
+		_velocity.y = min(_velocity.y, max_velocity)
+		_animated_sprite.stop()
+		var collision := move_and_collide(_velocity * delta)
+		var angle := PI / 2
+		if collision:
+			if collision.get_normal() == Vector2(0, 1):
+				_velocity.y = gravity * delta
+				_touched_bottom_of_top_pipe = true
+			if collision.get_normal() == Vector2(0, -1):
+				angle = 0
+				_is_landed_on_pipe = true
+		set_rotation(angle)
+		return
 	
-	if Input.is_key_pressed(KEY_UP):
-		new_y = position.y - vertical_movement_speed * delta
-		_downward_velocity = 0
-		_time_hung = 0
-	elif _is_speed_boosted and Input.is_key_pressed(KEY_DOWN):
-		new_y = position.y + vertical_movement_speed * delta
-		_downward_velocity = 0
-		_time_hung = 0
-	elif not _is_speed_boosted and _time_hung >= hang_time:
-# warning-ignore:narrowing_conversion
-		_downward_velocity = clamp(_downward_velocity + delta * gravity, 0, max_velocity)
-	else:
-		_time_hung += delta
+	var collision : KinematicCollision2D
 	
-	if _can_dash and Input.is_key_pressed(KEY_LEFT):
-		_play_stall_animation()
-		_do_dash(position.x - dash_distance)
-	elif _can_dash and Input.is_key_pressed(KEY_RIGHT):
-		_play_dash_animation()
-		_do_dash(position.x + dash_distance)
+	if _is_speed_boosted:
+		_velocity.y = 0
+		set_rotation(deg2rad(0))
 		
-	position.y = new_y
+		if Input.is_key_pressed(KEY_UP):
+			_velocity.y = flap_speed
+		elif Input.is_key_pressed(KEY_DOWN):
+			_velocity.y = -flap_speed
+			
+		collision = move_and_collide(_velocity * delta)
+	else:
+		_is_flying = Input.is_key_pressed(KEY_UP) and _allow_input
+		
+		if _is_flying:
+			_velocity.y = flap_speed
+			_play_flying_animation()
+		else:
+			_velocity.y += gravity * delta
+			_animated_sprite.stop()
+		
+		if _allow_input and _can_dash and Input.is_key_pressed(KEY_LEFT):
+			_play_stall_animation()
+			_do_dash(position.x - dash_distance)
+			set_rotation(deg2rad(0))
+			_velocity.y = 0
+		elif _allow_input and _can_dash and Input.is_key_pressed(KEY_RIGHT):
+			_play_dash_animation()
+			_do_dash(position.x + dash_distance)
+			set_rotation(deg2rad(0))
+			_velocity.y = 0
+		
+		_velocity.y = min(_velocity.y, max_velocity)
+		set_rotation(deg2rad(_velocity.y * 0.05))
+		collision = move_and_collide(_velocity * delta)
+	
+	if collision:
+		emit_signal("collided_with_obstacle", collision)
 
 
 func _do_dash(new_x):
@@ -107,21 +143,25 @@ func _set_speed_ghost_position(ghost):
 			previous_ghost_position_y = _speed_ghosts[i].get_position().y
 
 
-func stop_input():
+func die():
 	_allow_input = false
 	_set_speed_ghosts_visibility(false)
+	_is_flying = false
+	_is_dead = true
 
 
 func reset():
 	_needs_reset = true
 	_play_flying_animation()
-	_time_hung = 0.0
 	_can_dash = true
+	_is_flying = false
+	_is_dead = false
 
 
 func boost_speed():
 	_is_speed_boosted = true
 	_play_speed_boost_animation()
+	_is_flying = false
 	_can_dash = false
 	
 	_speed_boost_reset_tweener.interpolate_property(
