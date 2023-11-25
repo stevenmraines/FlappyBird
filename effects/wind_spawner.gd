@@ -1,11 +1,10 @@
 extends Node2D
 
 signal wind_spawn_timer_stopped
+signal wind_gust_spawned(wind_gust)
 
 export var wind_effect_scene : PackedScene
 export var gusts_per_second := 3
-export var min_alpha := 0.3
-export var max_alpha := 0.7
 
 var _spawn_timer : Timer
 var _screen_width := 1024
@@ -25,14 +24,13 @@ func _on_spawn_timer_timeout():
 	for _i in range(0, gusts_per_second):
 		var new_gust := wind_effect_scene.instance()
 # warning-ignore:return_value_discarded
-		connect("wind_spawn_timer_stopped", new_gust, "queue_free")
+		connect("wind_spawn_timer_stopped", new_gust, "remove")
 		add_child(new_gust)
 		new_gust.position = Vector2(
-			rand_range(0, _screen_width),
-			rand_range(0, _screen_height)
+			rand_range(-_screen_width, _screen_width),
+			rand_range(-_screen_height, _screen_height)
 		)
-		new_gust.scale = Vector2(0.2, 0.05)
-		new_gust.set_alpha(rand_range(min_alpha, max_alpha))
+		emit_signal("wind_gust_spawned", new_gust)
 
 
 func start():

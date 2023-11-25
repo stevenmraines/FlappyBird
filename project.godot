@@ -8,6 +8,16 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "PathFollow2D",
+"class": "TrailFollow2D",
+"language": "GDScript",
+"path": "res://effects/trail_follow_2d.gd"
+} ]
+_global_script_class_icons={
+"TrailFollow2D": ""
+}
+
 [application]
 
 config/name="Flappy Bird"

@@ -34,6 +34,8 @@ func _ready():
 	_ui.connect("new_game_pressed", self, "_new_game")
 # warning-ignore:return_value_discarded
 	_speed_boost_timer.connect("timeout", self, "_on_speed_boost_timer_timeout")
+# warning-ignore:return_value_discarded
+	_wind_spawner.connect("wind_gust_spawned", self, "_on_wind_gust_spawned")
 	
 # warning-ignore:return_value_discarded
 	connect("speed_boosted", _background, "boost_speed")
@@ -99,6 +101,11 @@ func _on_obstacle_spawned(obstacle):
 	
 	if _speed_boost_timer.time_left > 0:
 		obstacle.boost_speed()
+
+
+func _on_wind_gust_spawned(wind_gust):
+# warning-ignore:return_value_discarded
+	connect("game_over", wind_gust, "remove")
 
 
 func _on_speed_boost_gate_entered():

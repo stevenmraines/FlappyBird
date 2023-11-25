@@ -6,7 +6,7 @@
 [ext_resource path="res://level/controller.gd" type="Script" id=4]
 [ext_resource path="res://effects/wind_spawner.gd" type="Script" id=5]
 [ext_resource path="res://obstacle/spawner.tscn" type="PackedScene" id=6]
-[ext_resource path="res://effects/wind.tscn" type="PackedScene" id=7]
+[ext_resource path="res://effects/wind_gust.tscn" type="PackedScene" id=7]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 768, 50 )
@@ -30,7 +30,7 @@ layer = 3
 [node name="WindSpawner" type="Node2D" parent="EffectsCanvasLayer"]
 script = ExtResource( 5 )
 wind_effect_scene = ExtResource( 7 )
-gusts_per_second = 2
+gusts_per_second = 5
 
 [node name="UICanvasLayer" type="CanvasLayer" parent="."]
 layer = 4
