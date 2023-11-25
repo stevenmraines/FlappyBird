@@ -47,7 +47,6 @@ one_shot = true
 scale = Vector2( 1.28, 1.28 )
 frames = SubResource( 1 )
 animation = "flying"
-frame = 1
 playing = true
 
 [node name="DashTweener" type="Tween" parent="."]

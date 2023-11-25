@@ -6,13 +6,15 @@ onready var _spawn_timer := $SpawnTimer
 
 export var obstacle_scene : PackedScene
 # TODO These exported vars stopped working as well...
-var speed_boost_spawn_index := 16
+var speed_boost_spawn_index := 1
 var smash_spawn_index := 10
-var slide_spawn_index := 3
+var slide_spawn_index := 33
 export var max_smashers := 3
 export var max_sliders := 3
 export var min_y := -200
 export var max_y := 400
+export var spawn_timer_wait_time := 2.5
+export var spawn_timer_speed_boosted_wait_time := 1.5
 
 var _spawn_counter := 0
 var _smashers_remaining := 0
@@ -98,3 +100,11 @@ func stop_timer():
 	_smashers_remaining = 0
 	_sliders_remaining = 0
 	_spawned_obstacles = {}
+
+
+func boost_speed():
+	_spawn_timer.wait_time = spawn_timer_speed_boosted_wait_time
+
+
+func deboost_speed():
+	_spawn_timer.wait_time = spawn_timer_wait_time

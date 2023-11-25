@@ -9,6 +9,7 @@ obstacle_scene = ExtResource( 2 )
 max_sliders = 5
 min_y = -160
 max_y = 140
+spawn_timer_speed_boosted_wait_time = 1.0
 
 [node name="SpawnTimer" type="Timer" parent="."]
 wait_time = 2.5

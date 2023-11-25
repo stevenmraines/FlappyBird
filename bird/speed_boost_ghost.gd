@@ -5,7 +5,7 @@ signal position_timer_timeout(ghost)
 onready var _sprite := $Sprite
 onready var _position_timer := $PositionTimer
 
-
+# TODO Use Path2D and PathFollow2D instead
 func _ready():
 # warning-ignore:return_value_discarded
 	_position_timer.connect("timeout", self, "_on_position_timer_timeout")

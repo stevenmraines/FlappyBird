@@ -173,7 +173,8 @@ func boost_speed():
 		Tween.TRANS_LINEAR
 	)
 	
-	_speed_boost_reset_tweener.start()
+	# TODO Fix bug where this positions you further back than it should if you're already in the right place when it starts
+#	_speed_boost_reset_tweener.start()
 
 
 func deboost_speed():
