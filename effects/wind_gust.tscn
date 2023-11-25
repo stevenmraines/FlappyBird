@@ -4,13 +4,13 @@
 
 [sub_resource type="Curve" id=1]
 max_value = 2.0
-_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.498812, 2 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.498812, 1.46212 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
 
 [sub_resource type="Gradient" id=4]
 colors = PoolColorArray( 1, 1, 1, 0, 1, 1, 1, 1 )
 
 [sub_resource type="Gradient" id=3]
-offsets = PoolRealArray( 0.00268097, 0.49866, 1 )
+offsets = PoolRealArray( 0, 0.5, 1 )
 colors = PoolColorArray( 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0 )
 
 [sub_resource type="Curve2D" id=2]
@@ -18,7 +18,7 @@ _data = {
 "points": PoolVector2Array( -117.781, 1.60247, 117.781, -1.60247, 69.6784, 297.439, -169.06, 2.4037, 169.06, -2.4037, 358.123, 264.588, -167.458, 0.801234, 167.458, -0.801234, 671.405, 328.687, -145.825, 1.60247, 145.825, -1.60247, 957.446, 293.433 )
 }
 
-[node name="Line2D" type="Line2D"]
+[node name="WindGust" type="Line2D"]
 width_curve = SubResource( 1 )
 gradient = SubResource( 4 )
 script = ExtResource( 1 )
@@ -28,18 +28,6 @@ trail_color_gradient = SubResource( 3 )
 [node name="Path2D" type="Path2D" parent="."]
 position = Vector2( -16.8259, 5.80737 )
 curve = SubResource( 2 )
-
-[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
-position = Vector2( 69.6784, 297.439 )
-rotation = -0.0165383
-
-[node name="PathFollow2D2" type="PathFollow2D" parent="Path2D"]
-position = Vector2( 69.6784, 297.439 )
-rotation = -0.0165383
-
-[node name="PathFollow2D3" type="PathFollow2D" parent="Path2D"]
-position = Vector2( 69.6784, 297.439 )
-rotation = -0.0165383
 
 [node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
 position = Vector2( 497.166, 303.267 )

@@ -32,6 +32,11 @@ script = ExtResource( 5 )
 wind_effect_scene = ExtResource( 7 )
 gusts_per_second = 5
 
+[node name="TestWindGust" parent="EffectsCanvasLayer" instance=ExtResource( 7 )]
+visible = false
+line_segments = 30
+trail_speed = 0.003
+
 [node name="UICanvasLayer" type="CanvasLayer" parent="."]
 layer = 4
 
