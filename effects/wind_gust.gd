@@ -28,16 +28,16 @@ func _ready():
 	if trail_color_gradient != null:
 		use_gradient = true
 	
-	if flip_h:
-		for follower in trail_followers:
-			follower.unit_offset = 1.0
+#	if flip_h:
+#		for follower in trail_followers:
+#			follower.unit_offset = 1.0
 	
 # warning-ignore:return_value_discarded
 	_visibility_notifier_2d.connect("screen_exited", self, "remove")
 
 
 func _process(delta):
-#	position.x = position.x - movement_speed * delta
+	position.x = position.x - movement_speed * delta
 	
 	move_trail_followers()
 	
@@ -78,7 +78,7 @@ func move_trail_followers():
 	# Every frame, loop over all of the trail_followers
 	# and add trail_speed to their trail_offset
 	for follower in trail_followers:
-		follower.trail_offset += trail_speed
+		follower.trail_offset = follower.trail_offset + (-trail_speed if flip_h else trail_speed)
 		# If trail_offset is between 0 and 1, it's now "visible"
 		# on the path and it's unit_offset should be updated
 		if follower.trail_offset >= 0.0 and follower.trail_offset <= 1.0:
@@ -134,7 +134,8 @@ func init_trail_followers_and_gradient():
 		# 0.5 would give you more spacing than a value of 1, for instance.
 		var trail_spacing_inverse = 1.0 / trail_spacing
 		var trail_length = float(line_segments) * trail_spacing_inverse
-		trail_follow_2d.trail_offset = float(i) / trail_length - trail_spacing_inverse
+		var trail_percentage = float(i) / trail_length
+		trail_follow_2d.trail_offset = trail_percentage + (trail_spacing_inverse if flip_h else -trail_spacing_inverse)
 		trail_follow_2d.loop = false
 		trail_followers.append(trail_follow_2d)
 	

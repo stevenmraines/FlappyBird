@@ -6,9 +6,9 @@ onready var _spawn_timer := $SpawnTimer
 
 export var obstacle_scene : PackedScene
 # TODO These exported vars stopped working as well...
-var speed_boost_spawn_index := 1
+var speed_boost_spawn_index := 16
 var smash_spawn_index := 10
-var slide_spawn_index := 33
+var slide_spawn_index := 3
 export var max_smashers := 3
 export var max_sliders := 3
 export var min_y := -200
